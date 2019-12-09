@@ -1,4 +1,4 @@
-<img src="https://ranaroussi.github.io/pointjs/logo.png" width="112">
+<img src="https://ranaroussi.github.io/pointjs/logo.png" width="96">
 
 # point.js
 ### A lightweight, client-side framework for building user interfaces
