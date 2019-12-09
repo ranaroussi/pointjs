@@ -1,4 +1,4 @@
-<img src="https://ranaroussi.github.io/pointjs/logo.png" width="112">
+<img src="https://pointjs.org/logo.png" width="112">
 
 # template.js
 ### A fast, lightweight, client-side Javascript template engine.
@@ -18,13 +18,13 @@ Point is extensible, making it easy to create your own data modifiers
 to suits your specific needs. And, if you want to use other liberaries,
 you can, as Point plays nice with other.
 
-<a href="https://ranaroussi.github.io/pointjs/">Demos and documentation</a>
+\*\*\* <strong><a href="https://pointjs.org/">Demos and documentation</a></strong> \*\*\*
 
 
 ---
 
 ### Legal stuff
-template.js is licensed under the Apache License, Version 2.0. A copy of which is included in LICENSE.txt.
+Point.js is licensed under the Apache License, Version 2.0. A copy of which is included in LICENSE.txt.
 
 ### P.S.
 
