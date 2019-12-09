@@ -1,7 +1,7 @@
 <img src="https://ranaroussi.github.io/pointjs/logo.png" width="112">
 
-# template.js
-### A fast, lightweight, client-side Javascript template engine.
+# point.js
+### A lightweight, client-side framework for building user interfaces
 
 ---
 
