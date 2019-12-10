@@ -92,7 +92,7 @@
 
     <pre><code class="html" data-language="html">
 &lt;div <strong>point-component="welcome"</strong>&gt;
-{{message}}
+    {{message}}
 &lt;/div&gt;
 </code></pre>
 
@@ -102,7 +102,7 @@
 
     <pre><code class="javascript" data-language="js">
 var data = {
-message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
+    message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
 };
 point.<strong>attach</strong>("<strong>welcome</strong>", data);
 </code></pre>
@@ -154,7 +154,7 @@ point.<strong>render</strong>("<strong>welcome</strong>", data);
 
     <pre><code class="javascript" data-language="js">
 point.<strong>attach</strong>("<strong>welcome</strong>", {
-message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
+    message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
 });
 </code></pre>
 
@@ -170,11 +170,11 @@ point.$['<strong>welcome</strong>'].message = "New message";
 
     <pre><code class="javascript" data-language="js">
 point.<strong>attach</strong>("<strong>welcome</strong>", data).then((o) => {
-if (!o.error) {
-    // run your *success callback* here
-} else {
-    console.log("ERROR: "+ o.error)
-}
+    if (!o.error) {
+        // run your *success callback* here
+    } else {
+        console.log("ERROR: "+ o.error)
+    }
 });
 </code></pre>
 
@@ -192,7 +192,7 @@ if (!o.error) {
 
     <pre><code class="html" data-language="html">
 &lt;div <strong>point-component="status"</strong>&gt;
-<strong>{{if status == true}}</strong> We're Online! <strong>{{if:else}}</strong> We're Offline :( <strong>{{/if}}</strong>
+    <strong>{{if status == true}}</strong> We're Online! <strong>{{if:else}}</strong> We're Offline :( <strong>{{/if}}</strong>
 &lt;/div&gt;
 </code></pre>
 
@@ -225,7 +225,7 @@ point.$['<strong>status</strong>'].status = false;
         </p>
         <pre><code class="html" data-language="html">
 &lt;div <strong>point-component="status"</strong>&gt;
-<strong>{{if status == true}}</strong> We're Online! <strong>{{/if}}</strong>
+    <strong>{{if status == true}}</strong> We're Online! <strong>{{/if}}</strong>
 &lt;/div&gt;</code></pre>
     </blockquote>
 
@@ -237,15 +237,15 @@ point.$['<strong>status</strong>'].status = false;
 
     <pre><code class="html" data-language="html">
 &lt;ol&gt;
-&lt;li <strong>point-component="tasks"</strong>&gt;{{text}}&lt;/li&gt;
+    &lt;li <strong>point-component="tasks"</strong>&gt;{{text}}&lt;/li&gt;
 &lt;/ol&gt;
 </code></pre>
 
     <pre><code class="javascript" data-language="js">
 var tasks = [
-{ text: 'Learn JavaScript' },
-{ text: 'Learn Point' },
-{ text: 'Build something awesome' }
+    { text: 'Learn JavaScript' },
+    { text: 'Learn Point' },
+    { text: 'Build something awesome' }
 ];
 
 point.<strong>attach</strong>("<strong>tasks</strong>", tasks);
@@ -282,29 +282,29 @@ point.<strong>attach</strong>("<strong>tasks</strong>", tasks);
 
     <pre><code class="html" data-language="html">
 &lt;ul&gt;
-&lt;li <strong>point-component="contacts"</strong>&gt;{{name.first}} {{name.last}} - {{email}}&lt;/li&gt;
+    &lt;li <strong>point-component="contacts"</strong>&gt;{{name.first}} {{name.last}} - {{email}}&lt;/li&gt;
 &lt;/ul&gt;
 </code></pre>
 
     <pre><code class="javascript" data-language="js">
 var contacts = [{
-name: {
-    first: 'Tommy',
-    last: 'Shelton'
-},
-email: 'tommyshelton@gmail.com'
-}, {
-name: {
-    first: 'Mercedes',
-    last: 'Massey'
-},
-email: 'mercedesmassey@gmail.com'
-}, {
-name: {
-    first: 'Regina',
-    last: 'Curtis'
-},
-email: 'reginacurtis@gmail.com'
+    name: {
+        first: 'Tommy',
+        last: 'Shelton'
+    },
+    email: 'tommyshelton@gmail.com'
+  }, {
+    name: {
+        first: 'Mercedes',
+        last: 'Massey'
+    },
+    email: 'mercedesmassey@gmail.com'
+  }, {
+    name: {
+        first: 'Regina',
+        last: 'Curtis'
+    },
+    email: 'reginacurtis@gmail.com'
 }];
 
 point.<strong>attach</strong>("<strong>contacts</strong>", contacts);
@@ -325,7 +325,7 @@ point.<strong>attach</strong>("<strong>contacts</strong>", contacts);
                 last: 'Shelton'
             },
             email: 'tommyshelton@gmail.com'
-        }, {
+         }, {
             name: {
                 first: 'Mercedes',
                 last: 'Massey'
@@ -383,29 +383,29 @@ point.<strong>attach</strong>("<strong>contacts</strong>", contacts);
 
     <pre><code class="javascript" data-language="js">
 var customers = [{
-name: {
-    first: 'Tommy',
-    last: 'Shelton'
-},
-email: 'tommyshelton@gmail.com',
-balance: 16253.12,
-vip: 1
-}, {
-name: {
-    first: 'Mercedes',
-    last: 'Massey'
-},
-email: 'mercedesmassey@gmail.com',
-balance: 180101192.03,
-vip: 0
-}, {
-name: {
-    first: 'Regina',
-    last: 'Curtis'
-},
-email: 'reginacurtis@gmail.com',
-balance: 8112.19,
-vip: 0
+    name: {
+        first: 'Tommy',
+        last: 'Shelton'
+    },
+    email: 'tommyshelton@gmail.com',
+    balance: 16253.12,
+    vip: 1
+  }, {
+    name: {
+        first: 'Mercedes',
+        last: 'Massey'
+    },
+    email: 'mercedesmassey@gmail.com',
+    balance: 180101192.03,
+    vip: 0
+  }, {
+    name: {
+        first: 'Regina',
+        last: 'Curtis'
+    },
+    email: 'reginacurtis@gmail.com',
+    balance: 8112.19,
+    vip: 0
 }];
 
 point.<strong>attach</strong>("customers", customers);
@@ -557,7 +557,7 @@ point.<strong>attach</strong>("customers", customers);
     <p>You can create your own modifiers using the <code>point.modifier()</code> method, like so:</p>
     <pre><code class="javascript" data-language="js">
 point.modifier('NAME_OF_MODIFIER', (val) => {
-return 'MODIFIED_VALUE';
+    return 'MODIFIED_VALUE';
 });
 </code></pre>
 
@@ -566,7 +566,7 @@ return 'MODIFIED_VALUE';
 
     <pre><code class="javascript" data-language="js">
 point.modifier('status2word', (val) => {
-return ['Deleted', 'Pending', 'Active'][parseInt(val) + 1];
+    return ['Deleted', 'Pending', 'Active'][parseInt(val) + 1];
 });
 </code></pre>
 
@@ -591,14 +591,14 @@ return ['Deleted', 'Pending', 'Active'][parseInt(val) + 1];
 
     <pre><code class="html" data-language="html">
 &lt;div point-component="greeting"&gt;
-&lt;p&gt;{{message}}&lt;/p&gt;
-&lt;p&gt;&lt;input <strong>point-bind="message"</strong>&gt;&lt;/p&gt;
+    &lt;p&gt;{{message}}&lt;/p&gt;
+    &lt;p&gt;&lt;input <strong>point-bind="message"</strong>&gt;&lt;/p&gt;
 &lt;/div&gt;
 </code></pre>
 
     <pre><code class="javascript" data-language="js">
 let greeting = {
-message: "Hello World"
+    message: "Hello World"
 };
 point.attach("greeting", greeting);
 </code></pre>
@@ -654,7 +654,7 @@ point<strong>.attachHTML</strong>("/remote/templates/page.html", "<strong>contai
     <pre><code class="html" data-language="html">
 &lt;h3&gt;Online members:&lt;/h3&gt;
 &lt;ol&gt;
-&lt;li <strong>point-component="members"</strong>&gt;{{name.first}} {{name.last}}&lt;/li&gt;
+    &lt;li <strong>point-component="members"</strong>&gt;{{name.first}} {{name.last}}&lt;/li&gt;
 &lt;/ol&gt;
 </code></pre>
 
@@ -667,9 +667,9 @@ point<strong>.attachJSON</strong>("/remote/api/members", "<strong>members</stron
 
     <pre><code class="javascript" data-language="js">
 point<strong>.attachRemote</strong>(
-"/remote/templates/page.html",
-"/remote/api/members",
-"<strong>container</strong>");
+    "/remote/templates/page.html",
+    "/remote/api/members",
+    "<strong>container</strong>");
 </code></pre>
 
     <blockquote>
@@ -716,7 +716,7 @@ point<strong>.attachRemote</strong>(
 
 &lt;!-- navigation container --&gt;
 &lt;div point-container="body"&gt;
-Default site content
+    Default site content
 &lt;/div&gt;
 </code></pre>
 
@@ -731,9 +731,9 @@ Default site content
 
     <pre><code class="html" data-language="html">
 &lt;a href="/customers"
-<strong>point-route-container</strong>="body"
-<strong>point-route-component</strong>="customers"
-<strong>point-route-data</strong>="customers"&gt; All Customers &lt;/a&gt;
+    <strong>point-route-container</strong>="body"
+    <strong>point-route-component</strong>="customers"
+    <strong>point-route-data</strong>="customers"&gt; All Customers &lt;/a&gt;
 </code></pre>
 
     <hr id="routing-remote-data">
@@ -748,9 +748,9 @@ Default site content
 
     <pre><code class="html" data-language="html">
 &lt;a href="/customers"
-<strong>point-route-container</strong>="body"
-<strong>point-route-component</strong>="customers"
-<strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
+    <strong>point-route-container</strong>="body"
+    <strong>point-route-component</strong>="customers"
+    <strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
 </code></pre>
 
 
@@ -766,9 +766,9 @@ Default site content
 
     <pre><code class="html" data-language="html">
 &lt;a href="/customers"
-<strong>point-route-container</strong>="body"
-<strong>point-route-html</strong>="/customers.html"
-<strong>point-route-data</strong>="customers"&gt; Customers &lt;/a&gt;
+    <strong>point-route-container</strong>="body"
+    <strong>point-route-html</strong>="/customers.html"
+    <strong>point-route-data</strong>="customers"&gt; Customers &lt;/a&gt;
 </code></pre>
 
 
@@ -785,9 +785,9 @@ Default site content
 
     <pre><code class="html" data-language="html">
 &lt;a href="/customers"
-<strong>point-route-container</strong>="body"
-<strong>point-route-html</strong>="/customers.html"
-<strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
+    <strong>point-route-container</strong>="body"
+    <strong>point-route-html</strong>="/customers.html"
+    <strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
 </code></pre>
 
     <hr id="routing-server-configuration">
@@ -808,24 +808,24 @@ Default site content
     <pre><code class="apache" data-language="apache">
 # using mod_rewrite
 &lt;ifModule mod_rewrite.c&gt;
-RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+    RewriteEngine On
+    RewriteBase /
+    RewriteRule ^index\.html$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
 &lt;/ifModule&gt;
 
 # <strong>OR</strong> using FallbackResource
 &lt;Directory "/path/to/website/directory"&gt;
-FallbackResource /index.html
+    FallbackResource /index.html
 &lt;/Directory&gt;
 </code></pre>
 
     <h4>NGINX</h4>
     <pre><code class="nginx" data-language="nginx">
 location / {
-try_files $uri $uri/ /index.html;
+    try_files $uri $uri/ /index.html;
 }
 </code></pre>
 
