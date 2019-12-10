@@ -43,6 +43,810 @@
     <a href="#"><img src="logo.png" style="width:64px"></a>
     <span onclick="toggleMenu()">&#x2630;</span>
 </div>
+
+<div id="wrapper" onclick="hideMenu()">
+
+    <p id="logo"><img src="logo.png" style="width:112px"></p>
+    <h1 class="tight">Point.js</h1>
+    <h3 class="tight-top">A lightweight, client-side framework for building user interfaces</h3>
+
+    <p>
+        Point is a lightweight, client-side framework for building UI for the web.
+        Its focus is on the view layer, and unlike many other frameworks,
+        <strong>it uses plain HTML so it doesn't require you to learn a new syntax</strong>
+        &mdash; which makes it extremely easy to pick up and use in your projects.
+    </p>
+    <p>
+        Point is a <strong>no-bloatware framework</strong> (only 4.7KB minified and gzipped),
+        and it doesn't have a bunch of "features" you'll end up not using.
+        It handles <a href="#rendering">HTML rendering</a>, <a href="#binding">data binding</a>,
+        and <a href="#routing">routing for Single-Page Applications</a>.
+    </p>
+    <p>
+        Point is <strong>extensible</strong>, making it easy to create your own
+        <a href="#modifiers">data modifiers</a> to suits your specific needs.
+        And, if you want to use other liberaries, you can, as Point plays nice with other.
+    </p>
+    <p>The best thing about Point? This page is all the documentation you'll need 😀</p>
+
+    &nbsp;
+    <hr id="install">
+
+    <h2>Installation</h2>
+    <p>
+        Start with creating an <code>index.html</code> file and include Point.js with:
+    </p>
+
+    <pre><code class="html" data-language="html">
+&lt;!-- include Point.js --&gt;
+&lt;script src="//cdn.jsdelivr.net/gh/ranaroussi/pointjs/dist/point.js"&gt;&lt;/script&gt;
+</code></pre>
+
+    <hr id="rendering">
+
+    <h2>Rendering</h2>
+    <p>
+        To render data to the DOM,
+        add an HTML component and tag it as a <code>point-component</code>:
+    </p>
+
+    <pre><code class="html" data-language="html">
+&lt;div <strong>point-component="welcome"</strong>&gt;
+{{message}}
+&lt;/div&gt;
+</code></pre>
+
+    <p>
+        Next, bind some data to the <code>{{message}}</code> placeholder:
+    </p>
+
+    <pre><code class="javascript" data-language="js">
+var data = {
+message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
+};
+point.<strong>attach</strong>("<strong>welcome</strong>", data);
+</code></pre>
+
+    <p>Point will render your code as:</p>
+
+    <div class="preview" point-component="welcome">
+        {{message}}
+    </div>
+
+    <script>
+        var data = {
+            message: "Hello from <strong>Point.js</strong>."
+        };
+        point.attach("welcome", data);
+    </script>
+
+    <p>
+        <strong>We have just created our first app!</strong>
+    </p>
+    <p>
+        Note that <code>data</code> is now "attached" to that DOM element,
+        so any changes made to the <code>data</code> object
+        will be reflected in that DOM element.
+
+        To test this, open your browser's JavaScript console
+        and set <code>data.message</code> to a different value.
+        You should see the rendered example above update.
+    </p>
+
+    <blockquote>
+        <p>
+            To only render the data *<strong>without</strong>* linking it to the DOM element (have it rendered
+            once), use:</em>
+        </p>
+        <pre class="tight"><code class="javascript" data-language="js">
+point.<strong>render</strong>("<strong>welcome</strong>", data);
+</code></pre>
+    </blockquote>
+
+
+    <hr id="undeclared-vars">
+    <h3>Using un-declated variables</h3>
+
+    <p>
+        You don't always want (or need) to declare the data variable before
+        passing it into Point. For example, the following code will produce the same result:
+    </p>
+
+    <pre><code class="javascript" data-language="js">
+point.<strong>attach</strong>("<strong>welcome</strong>", {
+message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
+});
+</code></pre>
+
+    <p>In this case, the data will be available via
+        <code>point.<strong>$['welcome']</strong></code>, and subject to modifying using:</p>
+
+    <pre><code class="javascript" data-language="js">
+point.$['<strong>welcome</strong>'].message = "New message";
+</code></pre>
+
+    <hr id="callbacks">
+    <h3>Using callbacks (via Promises):</h3>
+
+    <pre><code class="javascript" data-language="js">
+point.<strong>attach</strong>("<strong>welcome</strong>", data).then((o) => {
+if (!o.error) {
+    // run your *success callback* here
+} else {
+    console.log("ERROR: "+ o.error)
+}
+});
+</code></pre>
+
+
+    <hr id="conditions">
+
+    <h2>Conditions, Loops, and Nested Data</h2>
+
+    <h3>Conditions</h3>
+    <p>
+        It's easy to use conditional statements using Point.
+        Let's say you wan't to let your visitors that you're available to chat.
+        In that case, we can use something like this:
+    </p>
+
+    <pre><code class="html" data-language="html">
+&lt;div <strong>point-component="status"</strong>&gt;
+<strong>{{if status == true}}</strong> We're Online! <strong>{{if:else}}</strong> We're Offline :( <strong>{{/if}}</strong>
+&lt;/div&gt;
+</code></pre>
+
+    <pre><code class="javascript" data-language="js">
+point.<strong>attach</strong>("<strong>status</strong>", { status: true });
+</code></pre>
+
+    <p>Point will render your code as:</p>
+
+    <div class="preview" point-component="status">
+        {{if status == true}} We're Online! {{if:else}} We're Offline :( {{/if}}
+    </div>
+
+    <script>
+        point.attach("status", {
+            status: true
+        });
+    </script>
+
+    <p>And, as you might have guessed, the status can can updated by invoking:</p>
+    <pre><code class="javascript" data-language="js">
+point.$['<strong>status</strong>'].status = false;
+</code></pre>
+
+    <blockquote>
+        <p>
+            It's worth mentioning that the <code>{{if:else}}</code> part is optional.
+            Say you only want to display a "We're Online" message and noting otherwise.
+            In that case, use:
+        </p>
+        <pre><code class="html" data-language="html">
+&lt;div <strong>point-component="status"</strong>&gt;
+<strong>{{if status == true}}</strong> We're Online! <strong>{{/if}}</strong>
+&lt;/div&gt;</code></pre>
+    </blockquote>
+
+    <hr id="loops">
+    <h3>Loops</h3>
+    <p>
+        Looping over data is as simple as feeding Point an <code>Array</code>.
+    </p>
+
+    <pre><code class="html" data-language="html">
+&lt;ol&gt;
+&lt;li <strong>point-component="tasks"</strong>&gt;{{text}}&lt;/li&gt;
+&lt;/ol&gt;
+</code></pre>
+
+    <pre><code class="javascript" data-language="js">
+var tasks = [
+{ text: 'Learn JavaScript' },
+{ text: 'Learn Point' },
+{ text: 'Build something awesome' }
+];
+
+point.<strong>attach</strong>("<strong>tasks</strong>", tasks);
+</code></pre>
+
+    <p>This will render as:</p>
+
+    <div class="preview">
+        <ol class="tight">
+            <li point-component="tasks">{{text}}</li>
+        </ol>
+    </div>
+
+    <script>
+        point.attach("tasks", [{
+            text: 'Learn JavaScript'
+        }, {
+            text: 'Learn Point'
+        }, {
+            text: 'Build something awesome'
+        }]);
+    </script>
+
+    <hr id="nested-data">
+    <h3>Nested data</h3>
+
+    <p>
+        Sometimes, your data may have a nested structure.
+        That's easy to handle with Point.
+    </p>
+    <p>
+        For example, the following code:
+    </p>
+
+    <pre><code class="html" data-language="html">
+&lt;ul&gt;
+&lt;li <strong>point-component="contacts"</strong>&gt;{{name.first}} {{name.last}} - {{email}}&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+    <pre><code class="javascript" data-language="js">
+var contacts = [{
+name: {
+    first: 'Tommy',
+    last: 'Shelton'
+},
+email: 'tommyshelton@gmail.com'
+}, {
+name: {
+    first: 'Mercedes',
+    last: 'Massey'
+},
+email: 'mercedesmassey@gmail.com'
+}, {
+name: {
+    first: 'Regina',
+    last: 'Curtis'
+},
+email: 'reginacurtis@gmail.com'
+}];
+
+point.<strong>attach</strong>("<strong>contacts</strong>", contacts);
+</code></pre>
+
+    <p>...will render as:</p>
+
+    <div class="preview">
+        <ul class="tight">
+            <li point-component="contacts">{{name.first}} {{name.last}} - {{email}}</li>
+        </ul>
+    </div>
+
+    <script>
+        let contacts = [{
+            name: {
+                first: 'Tommy',
+                last: 'Shelton'
+            },
+            email: 'tommyshelton@gmail.com'
+        }, {
+            name: {
+                first: 'Mercedes',
+                last: 'Massey'
+            },
+            email: 'mercedesmassey@gmail.com'
+        }, {
+            name: {
+                first: 'Regina',
+                last: 'Curtis'
+            },
+            email: 'reginacurtis@gmail.com'
+        }];
+        point.attach("contacts", contacts);
+    </script>
+
+
+
+    <hr id="modifiers">
+
+    <h2>Modifiers</h2>
+
+    <p>
+        So far, we saw how Point lets you render plain data.
+        But it is likely you'd want to format this data upon rendering.
+        That's where <em>modifiers</em> come in.
+    </p>
+
+    <p>Modifiers are basically formatters for your raw data. For example,
+        <code>{{blog_url<strong>|<u>link</u></strong>}}</code> will converts <code>blog_url</code> data into a link
+        automatically.</p>
+
+    <p>Herer's a quick example (modifiers are highlighted):</p>
+
+
+    <pre><code class="html" data-language="html">
+&lt;table width="100%"&gt;
+&lt;thead&gt;
+    &lt;tr&gt;
+        &lt;th&gt;VIP&lt;/th&gt;
+        &lt;th&gt;Name&lt;/th&gt;
+        &lt;th&gt;Email&lt;/th&gt;
+        &lt;th&gt;Balance&lt;/th&gt;
+    &lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+    &lt;tr point-component="customers"&gt;
+        &lt;td&gt;&lt;input type="checkbox" {{vip<mark>|checked</mark>}}&gt;&lt;/td&gt;
+        &lt;td&gt;{{name.first}} {{name.last}}&lt;/td&gt;
+        &lt;td&gt;{{email<mark>|link</mark>}}&lt;/td&gt;
+        &lt;td&gt;${{balance<mark>|format_number_as_word</mark>}}&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+
+    <pre><code class="javascript" data-language="js">
+var customers = [{
+name: {
+    first: 'Tommy',
+    last: 'Shelton'
+},
+email: 'tommyshelton@gmail.com',
+balance: 16253.12,
+vip: 1
+}, {
+name: {
+    first: 'Mercedes',
+    last: 'Massey'
+},
+email: 'mercedesmassey@gmail.com',
+balance: 180101192.03,
+vip: 0
+}, {
+name: {
+    first: 'Regina',
+    last: 'Curtis'
+},
+email: 'reginacurtis@gmail.com',
+balance: 8112.19,
+vip: 0
+}];
+
+point.<strong>attach</strong>("customers", customers);
+</code></pre>
+
+    <p>The above code will render as:</p>
+
+    <div class="preview">
+        <table width="100%" style="margin:2rem 0 1rem">
+            <thead>
+                <tr>
+                    <th>VIP</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr point-component="customers">
+                    <td><input type="checkbox" {{vip|checked}}></td>
+                    <td>{{name.first}} {{name.last}}</td>
+                    <td>{{email|link}}</td>
+                    <td>${{balance|format_number_as_word}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let customers = [{
+            name: {
+                first: 'Tommy',
+                last: 'Shelton'
+            },
+            email: 'tommyshelton@gmail.com',
+            balance: 16253.12,
+            vip: 1
+        }, {
+            name: {
+                first: 'Mercedes',
+                last: 'Massey'
+            },
+            email: 'mercedesmassey@gmail.com',
+            balance: 180101192.03,
+            vip: 0
+        }, {
+            name: {
+                first: 'Regina',
+                last: 'Curtis'
+            },
+            email: 'reginacurtis@gmail.com',
+            balance: 8112.19,
+            vip: 0
+        }];
+
+        point.attach("customers", customers);
+    </script>
+
+    <hr id="built-in-modifiers">
+    <h3>Built-in modifiers:</h3>
+    <div style="overflow: auto;">
+    <table width="100%">
+        <tr>
+            <th style="line-height: 2.5;">Modifier</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td class="code">link</td>
+            <td>converts the data to a link</td>
+        </tr>
+        <tr>
+            <td class="code">capitalize</td>
+            <td>capitalize the data (title case)</td>
+        </tr>
+        <tr>
+            <td class="code">uppercase</td>
+            <td>converts the data to upper case</td>
+        </tr>
+        <tr>
+            <td class="code">lowercase</td>
+            <td>converts the data to lower case</td>
+        </tr>
+        <tr>
+            <td class="code">nl2br</td>
+            <td>converts line breaks into <code>&lt;br&gt;</code></td>
+        </tr>
+        <tr>
+            <td class="code">nozero</td>
+            <td> render an empty string if the value is 0</td>
+        </tr>
+        <tr>
+            <td class="code">clean_url</td>
+            <td>print out the url without http(s):// or www.</td>
+        </tr>
+        <tr>
+            <td class="code">unix2date</td>
+            <td>converts unix timestamps into Date</td>
+        </tr>
+        <tr>
+            <td class="code">format_number</td>
+            <td>format numbers (results in 1,000.00)</td>
+        </tr>
+        <tr>
+            <td class="code">format_decimal</td>
+            <td>rounds floats to maximum of 2 decimal points</td>
+        </tr>
+        <tr>
+            <td class="code">format_number_as_word</td>
+            <td>convers numbers to "words" (ie 5K, 1M, etc)</td>
+        </tr>
+        <tr>
+            <td class="code">format_int</td>
+            <td>add thousands separator to integers (results in 1,000)</td>
+        </tr>
+        <tr>
+            <td class="code">format_percent</td>
+            <td>format percentage (= format_number + '%')</td>
+        </tr>
+        <tr>
+            <td class="code">checked</td>
+            <td>adds <code>checked="checked"</code> if value is <strong>true or 1</strong> (for radio/checkboxes)</td>
+        </tr>
+        <tr>
+            <td class="code">negative_checked</td>
+            <td>adds <code>checked="checked"</code> if value is <strong>false or 0</strong> (for radio/checkboxes)</td>
+        </tr>
+        <tr>
+            <td class="code">selected</td>
+            <td>adds <code>selected="selected"</code> if value is <strong>true or 1</strong> (for select boxes)</td>
+        </tr>
+        <tr>
+            <td class="code">negative_selected</td>
+            <td>adds <code>selected="selected"</code> if value is <strong>false or 0</strong> (for select boxes)</td>
+        </tr>
+        <tr>
+            <td class="code">no_null</td>
+            <td>convert null values into "<code>-</code>"</td>
+        </tr>
+        <tr>
+            <td class="code">hidden_if_empty</td>
+            <td>converts empty values into <code>hidden</code> (usefull for css classes)</td>
+        </tr>
+    </table>
+    </div>
+
+    <hr id="custom-modifiers">
+    <h3>Creating custom modifiers:</h3>
+
+    <p>You can create your own modifiers using the <code>point.modifier()</code> method, like so:</p>
+    <pre><code class="javascript" data-language="js">
+point.modifier('NAME_OF_MODIFIER', (val) => {
+return 'MODIFIED_VALUE';
+});
+</code></pre>
+
+    <p>For example, if you want to change the a "user status" flag from <code>[-1, 0, 1]</code> to
+        <code>[deleted, pending, active]</code>, you would write something like this:</p>
+
+    <pre><code class="javascript" data-language="js">
+point.modifier('status2word', (val) => {
+return ['Deleted', 'Pending', 'Active'][parseInt(val) + 1];
+});
+</code></pre>
+
+    <p>...which you can later use in your template, like so:</p>
+
+    <pre><code class="html" data-language="html">
+&lt;p&gt;Your status: {{user_status<mark>|status2word</mark>}}&lt;/p&gt;
+&lt;!-- will render as &lt;p&gt;Your status: Active&lt;/p&gt; whenever "user_status" == 1 --&gt;
+</code></pre>
+
+
+
+
+    <hr id="binding">
+    <h2>Handling user input</h2>
+
+    <p>
+        Point also provides the
+        <code>point-bind</code> DOM element attribute to make it easy to establish
+        two-way binding between a form input and a javascript object:
+    </p>
+
+    <pre><code class="html" data-language="html">
+&lt;div point-component="greeting"&gt;
+&lt;p&gt;{{message}}&lt;/p&gt;
+&lt;p&gt;&lt;input <strong>point-bind="message"</strong>&gt;&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+
+    <pre><code class="javascript" data-language="js">
+let greeting = {
+message: "Hello World"
+};
+point.attach("greeting", greeting);
+</code></pre>
+
+    <p>Will result in:</p>
+
+    <div class="preview" point-component="greeting">
+        <p style="margin:.5rem 0 .25rem">{{message}}</p>
+        <p><input point-bind="message" style="font-size:12px;padding:.2rem"></p>
+    </div>
+
+    <script>
+        let greeting = {
+            message: "Hello World"
+        };
+        point.attach("greeting", greeting);
+    </script>
+
+
+    <hr id="external">
+    <h2>Using external data</h2>
+    <p>
+        So what if your data or HTML templates are located on a different URL than your page?
+        Point can help you with that by offering a few methods to
+        pull UI, data or <em>both</em> remotely.
+    </p>
+
+    <hr id="external-templates">
+    <h3>Using remote resources:</h3>
+
+    <p>First, make sure you have a container to store your remote UI:</p>
+
+    <pre><code class="html" data-language="html">
+&lt;div id="<strong>container</strong>"&gt;&lt;/div&gt;
+</code></pre>
+
+    <p>Then, pull that UI and place it in the <strong>container</strong> element, ready to be rendered by Point:</p>
+
+    <pre><code class="javascript" data-language="js">
+// fetch &amp; attach "<strong>people</strong>" to "<strong>person</strong>" template
+point<strong>.attachHTML</strong>("/remote/templates/page.html", "<strong>container</strong>", data);
+</code></pre>
+
+    <p>
+        * <code>template.html</code> should have relevant Point placeholders so <code>data</code> can be rendered
+        there.
+    </p>
+
+    <hr id="external-data">
+    <h3>Using remote data:</h3>
+
+
+    <pre><code class="html" data-language="html">
+&lt;h3&gt;Online members:&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li <strong>point-component="members"</strong>&gt;{{name.first}} {{name.last}}&lt;/li&gt;
+&lt;/ol&gt;
+</code></pre>
+
+    <pre><code class="javascript" data-language="js">
+point<strong>.attachJSON</strong>("/remote/api/members", "<strong>members</strong>");
+</code></pre>
+
+    <hr id="external-templates-and-data">
+    <h3>If you're using <em>both</em> external templates and JSON data, use:</h3>
+
+    <pre><code class="javascript" data-language="js">
+point<strong>.attachRemote</strong>(
+"/remote/templates/page.html",
+"/remote/api/members",
+"<strong>container</strong>");
+</code></pre>
+
+    <blockquote>
+        To only render the data *<strong>without</strong>* linking it to the DOM element (have it rendered once),
+        simply replace <code>attach*</code> with <code>render*</code> &mdash; for example, use
+        <code>renderJSON(...)</code> instead of <code>attachJSON(...)</code>.
+    </blockquote>
+
+
+
+    <hr id="routing">
+    <h2>Routing</h2>
+
+    <p>
+        Point comes bundled up with a router library for
+        navigating <strong>Single Page Applications</strong>.
+    </p>
+
+    <p>
+        If you only need simple routing for your <strong>Single Page Applications</strong>,
+        and do not wish to involve a full-featured router library,
+        Point comes bundled up with a simple router library that allows you to:
+    </p>
+    <ul>
+        <li>Render page-level components</li>
+        <li>Load remote templates</li>
+        <li>Render either using local or remotly-located data</li>
+    </ul>
+
+    <hr id="routing-install">
+    <h3>Installation</h3>
+    <p>
+        To get started, include Point's router in your HTML
+        and add the navigation container.
+    </p>
+
+    <pre><code class="html" data-language="html">
+&lt;!-- include Point.js router --&gt;
+&lt;script src="//cdn.jsdelivr.net/gh/ranaroussi/pointjs/dist/router.js"&gt;&lt;/script&gt;
+
+&lt;nav&gt;
+...
+&lt;/nav&gt;
+
+&lt;!-- navigation container --&gt;
+&lt;div point-container="body"&gt;
+Default site content
+&lt;/div&gt;
+</code></pre>
+
+    <hr id="routing-local-data">
+    <h3>Using page-level components with local data</h3>
+    <p>The following link will...</p>
+    <ol>
+        <li>Attach the <code>data</code> object to the <code>customers</code> component</li>
+        <li>Place the rendered content in the <code>body</code> container</li>
+        <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
+    </ol>
+
+    <pre><code class="html" data-language="html">
+&lt;a href="/customers"
+<strong>point-route-container</strong>="body"
+<strong>point-route-component</strong>="customers"
+<strong>point-route-data</strong>="customers"&gt; All Customers &lt;/a&gt;
+</code></pre>
+
+    <hr id="routing-remote-data">
+    <h3>Using page-level components with remote data</h3>
+    <p>The following link will...</p>
+    <ol>
+        <li>Fetch data from <code>/customers.json</code></li>
+        <li>Attach it to the <code>customers</code> component</li>
+        <li>Place the rendered content in the <code>body</code> container</li>
+        <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
+    </ol>
+
+    <pre><code class="html" data-language="html">
+&lt;a href="/customers"
+<strong>point-route-container</strong>="body"
+<strong>point-route-component</strong>="customers"
+<strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
+</code></pre>
+
+
+    <hr id="routing-remote-templates">
+    <h3>Using remote template with local data</h3>
+    <p>The following link will...</p>
+    <ol>
+        <li>Fetch a template from <code>/customers.html</code></li>
+        <li>Attach the <code>data</code> object to that template</li>
+        <li>Place the rendered content in the <code>body</code> container</li>
+        <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
+    </ol>
+
+    <pre><code class="html" data-language="html">
+&lt;a href="/customers"
+<strong>point-route-container</strong>="body"
+<strong>point-route-html</strong>="/customers.html"
+<strong>point-route-data</strong>="customers"&gt; Customers &lt;/a&gt;
+</code></pre>
+
+
+    <hr id="routing-remote-templates-and-data">
+    <h3>Using remote template with remote data</h3>
+    <p>The following link will...</p>
+    <ol>
+        <li>Fetch data from <code>/customers.json</code></li>
+        <li>Fetch a template fetched from <code>/customers.html</code></li>
+        <li>Attach the downloaded data to the downloaded template</li>
+        <li>Place the rendered content in the <code>body</code> container</li>
+        <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
+    </ol>
+
+    <pre><code class="html" data-language="html">
+&lt;a href="/customers"
+<strong>point-route-container</strong>="body"
+<strong>point-route-html</strong>="/customers.html"
+<strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
+</code></pre>
+
+    <hr id="routing-server-configuration">
+    <h3>Server configurations</h3>
+    <blockquote>
+        <p>
+            Single Page Applications have a limitation, whereas the
+            users will get a <code>404</code> error if they access
+            <code>http://oursite.com/user/id</code>.
+            To fix the issue, we need to do is add a
+            catch-all fallback route to our web server configuration.
+            If the URL doesn't match any static assets,
+            it should serve the same <code>index.html</code> page that's our app.
+        </p>
+    </blockquote>
+
+    <h4>Apache</h4>
+    <pre><code class="apache" data-language="apache">
+# using mod_rewrite
+&lt;ifModule mod_rewrite.c&gt;
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+&lt;/ifModule&gt;
+
+# <strong>OR</strong> using FallbackResource
+&lt;Directory "/path/to/website/directory"&gt;
+FallbackResource /index.html
+&lt;/Directory&gt;
+</code></pre>
+
+    <h4>NGINX</h4>
+    <pre><code class="nginx" data-language="nginx">
+location / {
+try_files $uri $uri/ /index.html;
+}
+</code></pre>
+
+    <p>Now that that's done - the router will work as intended.</p>
+
+
+
+
+
+    <hr>
+    <footer>
+        Copyright &copy; 2019 Ran Aroussi. All rights reserved.<br>
+        <em>DOM.js's source code is available on <a href="https://github.com/ranaroussi/pointjs/dist"
+                target="github">Github</a>
+            and is licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="apache">Apache
+                License 2.0</a>.</em>
+    </footer>
+
+</div>
+
+
 <div id="sidebar" onclick="hideMenu()">
 <p><a href="#"><img src="logo.png" style="width:64px"></a></p>
 <h3 class="tight">Table of Contents</h3>
@@ -83,819 +887,18 @@
             <li><a href="#routing-remote-templates-and-data">Remote templates <em>and</em> data</a></li>
             <li><a href="#routing-server-configuration">Server configurations</a></li>
         </ul></li>
+
+    <li><a href="https://github.com/ranaroussi/pointjs" target="_blank">Github</a></li>
+
 </ul></div>
 
-    <div id="wrapper" onclick="hideMenu()">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/atom-one-light.min.css">
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
 
-        <p id="logo"><img src="logo.png" style="width:112px"></p>
-        <h1 class="tight">Point.js</h1>
-        <h3 class="tight-top">A lightweight, client-side framework for building user interfaces</h3>
-
-        <p>
-            Point is a lightweight, client-side framework for building UI for the web.
-            Its focus is on the view layer, and unlike many other frameworks,
-            <strong>it uses plain HTML so it doesn't require you to learn a new syntax</strong>
-            &mdash; which makes it extremely easy to pick up and use in your projects.
-        </p>
-        <p>
-            Point is a <strong>no-bloatware framework</strong> (only 4.7KB minified and gzipped),
-            and it doesn't have a bunch of "features" you'll end up not using.
-            It handles <a href="#rendering">HTML rendering</a>, <a href="#binding">data binding</a>,
-            and <a href="#routing">routing for Single-Page Applications</a>.
-        </p>
-        <p>
-            Point is <strong>extensible</strong>, making it easy to create your own
-            <a href="#modifiers">data modifiers</a> to suits your specific needs.
-            And, if you want to use other liberaries, you can, as Point plays nice with other.
-        </p>
-        <p>The best thing about Point? This page is all the documentation you'll need 😀</p>
-
-        &nbsp;
-        <hr id="install">
-
-        <h2>Installation</h2>
-        <p>
-            Start with creating an <code>index.html</code> file and include Point.js with:
-        </p>
-
-        <pre><code class="html" data-language="html">
-&lt;!-- include Point.js --&gt;
-&lt;script src="//cdn.jsdelivr.net/gh/ranaroussi/pointjs/dist/point.js"&gt;&lt;/script&gt;
-</code></pre>
-
-        <hr id="rendering">
-
-        <h2>Rendering</h2>
-        <p>
-            To render data to the DOM,
-            add an HTML component and tag it as a <code>point-component</code>:
-        </p>
-
-        <pre><code class="html" data-language="html">
-&lt;div <strong>point-component="welcome"</strong>&gt;
-    {{message}}
-&lt;/div&gt;
-</code></pre>
-
-        <p>
-            Next, bind some data to the <code>{{message}}</code> placeholder:
-        </p>
-
-        <pre><code class="javascript" data-language="js">
-var data = {
-    message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
-};
-point.<strong>attach</strong>("<strong>welcome</strong>", data);
-</code></pre>
-
-        <p>Point will render your code as:</p>
-
-        <div class="preview" point-component="welcome">
-            {{message}}
-        </div>
-
-        <script>
-            var data = {
-                message: "Hello from <strong>Point.js</strong>."
-            };
-            point.attach("welcome", data);
-        </script>
-
-        <p>
-            <strong>We have just created our first app!</strong>
-        </p>
-        <p>
-            Note that <code>data</code> is now "attached" to that DOM element,
-            so any changes made to the <code>data</code> object
-            will be reflected in that DOM element.
-
-            To test this, open your browser's JavaScript console
-            and set <code>data.message</code> to a different value.
-            You should see the rendered example above update.
-        </p>
-
-        <blockquote>
-            <p>
-                To only render the data *<strong>without</strong>* linking it to the DOM element (have it rendered
-                once), use:</em>
-            </p>
-            <pre class="tight"><code class="javascript" data-language="js">
-point.<strong>render</strong>("<strong>welcome</strong>", data);
-</code></pre>
-        </blockquote>
-
-
-        <hr id="undeclared-vars">
-        <h3>Using un-declated variables</h3>
-
-        <p>
-            You don't always want (or need) to declare the data variable before
-            passing it into Point. For example, the following code will produce the same result:
-        </p>
-
-        <pre><code class="javascript" data-language="js">
-point.<strong>attach</strong>("<strong>welcome</strong>", {
-    message: "Hello from &lt;strong&gt;Point.js&lt;/strong&gt;."
-});
-</code></pre>
-
-        <p>In this case, the data will be available via
-            <code>point.<strong>$['welcome']</strong></code>, and subject to modifying using:</p>
-
-        <pre><code class="javascript" data-language="js">
-point.$['<strong>welcome</strong>'].message = "New message";
-</code></pre>
-
-        <hr id="callbacks">
-        <h3>Using callbacks (via Promises):</h3>
-
-        <pre><code class="javascript" data-language="js">
-point.<strong>attach</strong>("<strong>welcome</strong>", data).then((o) => {
-    if (!o.error) {
-        // run your *success callback* here
-    } else {
-        console.log("ERROR: "+ o.error)
-    }
-});
-</code></pre>
-
-
-        <hr id="conditions">
-
-        <h2>Conditions, Loops, and Nested Data</h2>
-
-        <h3>Conditions</h3>
-        <p>
-            It's easy to use conditional statements using Point.
-            Let's say you wan't to let your visitors that you're available to chat.
-            In that case, we can use something like this:
-        </p>
-
-        <pre><code class="html" data-language="html">
-&lt;div <strong>point-component="status"</strong>&gt;
-    <strong>{{if status == true}}</strong> We're Online! <strong>{{if:else}}</strong> We're Offline :( <strong>{{/if}}</strong>
-&lt;/div&gt;
-</code></pre>
-
-        <pre><code class="javascript" data-language="js">
-point.<strong>attach</strong>("<strong>status</strong>", { status: true });
-</code></pre>
-
-        <p>Point will render your code as:</p>
-
-        <div class="preview" point-component="status">
-            {{if status == true}} We're Online! {{if:else}} We're Offline :( {{/if}}
-        </div>
-
-        <script>
-            point.attach("status", {
-                status: true
-            });
-        </script>
-
-        <p>And, as you might have guessed, the status can can updated by invoking:</p>
-        <pre><code class="javascript" data-language="js">
-point.$['<strong>status</strong>'].status = false;
-</code></pre>
-
-        <blockquote>
-            <p>
-                It's worth mentioning that the <code>{{if:else}}</code> part is optional.
-                Say you only want to display a "We're Online" message and noting otherwise.
-                In that case, use:
-            </p>
-            <pre><code class="html" data-language="html">
-&lt;div <strong>point-component="status"</strong>&gt;
-    <strong>{{if status == true}}</strong> We're Online! <strong>{{/if}}</strong>
-&lt;/div&gt;</code></pre>
-        </blockquote>
-
-        <hr id="loops">
-        <h3>Loops</h3>
-        <p>
-            Looping over data is as simple as feeding Point an <code>Array</code>.
-        </p>
-
-        <pre><code class="html" data-language="html">
-&lt;ol&gt;
-    &lt;li <strong>point-component="tasks"</strong>&gt;{{text}}&lt;/li&gt;
-&lt;/ol&gt;
-</code></pre>
-
-        <pre><code class="javascript" data-language="js">
-var tasks = [
-    { text: 'Learn JavaScript' },
-    { text: 'Learn Point' },
-    { text: 'Build something awesome' }
-];
-
-point.<strong>attach</strong>("<strong>tasks</strong>", tasks);
-</code></pre>
-
-        <p>This will render as:</p>
-
-        <div class="preview">
-            <ol class="tight">
-                <li point-component="tasks">{{text}}</li>
-            </ol>
-        </div>
-
-        <script>
-            point.attach("tasks", [{
-                text: 'Learn JavaScript'
-            }, {
-                text: 'Learn Point'
-            }, {
-                text: 'Build something awesome'
-            }]);
-        </script>
-
-        <hr id="nested-data">
-        <h3>Nested data</h3>
-
-        <p>
-            Sometimes, your data may have a nested structure.
-            That's easy to handle with Point.
-        </p>
-        <p>
-            For example, the following code:
-        </p>
-
-        <pre><code class="html" data-language="html">
-&lt;ul&gt;
-    &lt;li <strong>point-component="contacts"</strong>&gt;{{name.first}} {{name.last}} - {{email}}&lt;/li&gt;
-&lt;/ul&gt;
-</code></pre>
-
-        <pre><code class="javascript" data-language="js">
-var contacts = [{
-    name: {
-        first: 'Tommy',
-        last: 'Shelton'
-    },
-    email: 'tommyshelton@gmail.com'
-}, {
-    name: {
-        first: 'Mercedes',
-        last: 'Massey'
-    },
-    email: 'mercedesmassey@gmail.com'
-}, {
-    name: {
-        first: 'Regina',
-        last: 'Curtis'
-    },
-    email: 'reginacurtis@gmail.com'
-}];
-
-point.<strong>attach</strong>("<strong>contacts</strong>", contacts);
-</code></pre>
-
-        <p>...will render as:</p>
-
-        <div class="preview">
-            <ul class="tight">
-                <li point-component="contacts">{{name.first}} {{name.last}} - {{email}}</li>
-            </ul>
-        </div>
-
-        <script>
-            let contacts = [{
-                name: {
-                    first: 'Tommy',
-                    last: 'Shelton'
-                },
-                email: 'tommyshelton@gmail.com'
-            }, {
-                name: {
-                    first: 'Mercedes',
-                    last: 'Massey'
-                },
-                email: 'mercedesmassey@gmail.com'
-            }, {
-                name: {
-                    first: 'Regina',
-                    last: 'Curtis'
-                },
-                email: 'reginacurtis@gmail.com'
-            }];
-            point.attach("contacts", contacts);
-        </script>
-
-
-
-        <hr id="modifiers">
-
-        <h2>Modifiers</h2>
-
-        <p>
-            So far, we saw how Point lets you render plain data.
-            But it is likely you'd want to format this data upon rendering.
-            That's where <em>modifiers</em> come in.
-        </p>
-
-        <p>Modifiers are basically formatters for your raw data. For example,
-            <code>{{blog_url<strong>|<u>link</u></strong>}}</code> will converts <code>blog_url</code> data into a link
-            automatically.</p>
-
-        <p>Herer's a quick example (modifiers are highlighted):</p>
-
-
-        <pre><code class="html" data-language="html">
-&lt;table width="100%"&gt;
-    &lt;thead&gt;
-        &lt;tr&gt;
-            &lt;th&gt;VIP&lt;/th&gt;
-            &lt;th&gt;Name&lt;/th&gt;
-            &lt;th&gt;Email&lt;/th&gt;
-            &lt;th&gt;Balance&lt;/th&gt;
-        &lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody&gt;
-        &lt;tr point-component="customers"&gt;
-            &lt;td&gt;&lt;input type="checkbox" {{vip<mark>|checked</mark>}}&gt;&lt;/td&gt;
-            &lt;td&gt;{{name.first}} {{name.last}}&lt;/td&gt;
-            &lt;td&gt;{{email<mark>|link</mark>}}&lt;/td&gt;
-            &lt;td&gt;${{balance<mark>|format_number_as_word</mark>}}&lt;/td&gt;
-        &lt;/tr&gt;
-    &lt;/tbody&gt;
-&lt;/table&gt;
-</code></pre>
-
-        <pre><code class="javascript" data-language="js">
-var customers = [{
-    name: {
-        first: 'Tommy',
-        last: 'Shelton'
-    },
-    email: 'tommyshelton@gmail.com',
-    balance: 16253.12,
-    vip: 1
-}, {
-    name: {
-        first: 'Mercedes',
-        last: 'Massey'
-    },
-    email: 'mercedesmassey@gmail.com',
-    balance: 180101192.03,
-    vip: 0
-}, {
-    name: {
-        first: 'Regina',
-        last: 'Curtis'
-    },
-    email: 'reginacurtis@gmail.com',
-    balance: 8112.19,
-    vip: 0
-}];
-
-point.<strong>attach</strong>("customers", customers);
-</code></pre>
-
-        <p>The above code will render as:</p>
-
-        <div class="preview">
-            <table width="100%" style="margin:2rem 0 1rem">
-                <thead>
-                    <tr>
-                        <th>VIP</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr point-component="customers">
-                        <td><input type="checkbox" {{vip|checked}}></td>
-                        <td>{{name.first}} {{name.last}}</td>
-                        <td>{{email|link}}</td>
-                        <td>${{balance|format_number_as_word}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <script>
-            let customers = [{
-                name: {
-                    first: 'Tommy',
-                    last: 'Shelton'
-                },
-                email: 'tommyshelton@gmail.com',
-                balance: 16253.12,
-                vip: 1
-            }, {
-                name: {
-                    first: 'Mercedes',
-                    last: 'Massey'
-                },
-                email: 'mercedesmassey@gmail.com',
-                balance: 180101192.03,
-                vip: 0
-            }, {
-                name: {
-                    first: 'Regina',
-                    last: 'Curtis'
-                },
-                email: 'reginacurtis@gmail.com',
-                balance: 8112.19,
-                vip: 0
-            }];
-
-            point.attach("customers", customers);
-        </script>
-
-        <hr id="built-in-modifiers">
-        <h3>Built-in modifiers:</h3>
-        <div style="overflow: auto;">
-        <table width="100%">
-            <tr>
-                <th style="line-height: 2.5;">Modifier</th>
-                <th>Description</th>
-            </tr>
-            <tr>
-                <td class="code">link</td>
-                <td>converts the data to a link</td>
-            </tr>
-            <tr>
-                <td class="code">capitalize</td>
-                <td>capitalize the data (title case)</td>
-            </tr>
-            <tr>
-                <td class="code">uppercase</td>
-                <td>converts the data to upper case</td>
-            </tr>
-            <tr>
-                <td class="code">lowercase</td>
-                <td>converts the data to lower case</td>
-            </tr>
-            <tr>
-                <td class="code">nl2br</td>
-                <td>converts line breaks into <code>&lt;br&gt;</code></td>
-            </tr>
-            <tr>
-                <td class="code">nozero</td>
-                <td> render an empty string if the value is 0</td>
-            </tr>
-            <tr>
-                <td class="code">clean_url</td>
-                <td>print out the url without http(s):// or www.</td>
-            </tr>
-            <tr>
-                <td class="code">unix2date</td>
-                <td>converts unix timestamps into Date</td>
-            </tr>
-            <tr>
-                <td class="code">format_number</td>
-                <td>format numbers (results in 1,000.00)</td>
-            </tr>
-            <tr>
-                <td class="code">format_decimal</td>
-                <td>rounds floats to maximum of 2 decimal points</td>
-            </tr>
-            <tr>
-                <td class="code">format_number_as_word</td>
-                <td>convers numbers to "words" (ie 5K, 1M, etc)</td>
-            </tr>
-            <tr>
-                <td class="code">format_int</td>
-                <td>add thousands separator to integers (results in 1,000)</td>
-            </tr>
-            <tr>
-                <td class="code">format_percent</td>
-                <td>format percentage (= format_number + '%')</td>
-            </tr>
-            <tr>
-                <td class="code">checked</td>
-                <td>adds <code>checked="checked"</code> if value is <strong>true or 1</strong> (for radio/checkboxes)</td>
-            </tr>
-            <tr>
-                <td class="code">negative_checked</td>
-                <td>adds <code>checked="checked"</code> if value is <strong>false or 0</strong> (for radio/checkboxes)</td>
-            </tr>
-            <tr>
-                <td class="code">selected</td>
-                <td>adds <code>selected="selected"</code> if value is <strong>true or 1</strong> (for select boxes)</td>
-            </tr>
-            <tr>
-                <td class="code">negative_selected</td>
-                <td>adds <code>selected="selected"</code> if value is <strong>false or 0</strong> (for select boxes)</td>
-            </tr>
-            <tr>
-                <td class="code">no_null</td>
-                <td>convert null values into "<code>-</code>"</td>
-            </tr>
-            <tr>
-                <td class="code">hidden_if_empty</td>
-                <td>converts empty values into <code>hidden</code> (usefull for css classes)</td>
-            </tr>
-        </table>
-        </div>
-
-        <hr id="custom-modifiers">
-        <h3>Creating custom modifiers:</h3>
-
-        <p>You can create your own modifiers using the <code>point.modifier()</code> method, like so:</p>
-        <pre><code class="javascript" data-language="js">
-point.modifier('NAME_OF_MODIFIER', (val) => {
-    return 'MODIFIED_VALUE';
-});
-</code></pre>
-
-        <p>For example, if you want to change the a "user status" flag from <code>[-1, 0, 1]</code> to
-            <code>[deleted, pending, active]</code>, you would write something like this:</p>
-
-        <pre><code class="javascript" data-language="js">
-point.modifier('status2word', (val) => {
-    return ['Deleted', 'Pending', 'Active'][parseInt(val) + 1];
-});
-</code></pre>
-
-        <p>...which you can later use in your template, like so:</p>
-
-        <pre><code class="html" data-language="html">
-&lt;p&gt;Your status: {{user_status<mark>|status2word</mark>}}&lt;/p&gt;
-&lt;!-- will render as &lt;p&gt;Your status: Active&lt;/p&gt; whenever "user_status" == 1 --&gt;
-</code></pre>
-
-
-
-
-        <hr id="binding">
-        <h2>Handling user input</h2>
-
-        <p>
-            Point also provides the
-            <code>point-bind</code> DOM element attribute to make it easy to establish
-            two-way binding between a form input and a javascript object:
-        </p>
-
-        <pre><code class="html" data-language="html">
-&lt;div point-component="greeting"&gt;
-    &lt;p&gt;{{message}}&lt;/p&gt;
-    &lt;p&gt;&lt;input <strong>point-bind="message"</strong>&gt;&lt;/p&gt;
-&lt;/div&gt;
-</code></pre>
-
-        <pre><code class="javascript" data-language="js">
-let greeting = {
-    message: "Hello World"
-};
-point.attach("greeting", greeting);
-</code></pre>
-
-        <p>Will result in:</p>
-
-        <div class="preview" point-component="greeting">
-            <p style="margin:.5rem 0 .25rem">{{message}}</p>
-            <p><input point-bind="message" style="font-size:12px;padding:.2rem"></p>
-        </div>
-
-        <script>
-            let greeting = {
-                message: "Hello World"
-            };
-            point.attach("greeting", greeting);
-        </script>
-
-
-        <hr id="external">
-        <h2>Using external data</h2>
-        <p>
-            So what if your data or HTML templates are located on a different URL than your page?
-            Point can help you with that by offering a few methods to
-            pull UI, data or <em>both</em> remotely.
-        </p>
-
-        <hr id="external-templates">
-        <h3>Using remote resources:</h3>
-
-        <p>First, make sure you have a container to store your remote UI:</p>
-
-        <pre><code class="html" data-language="html">
-&lt;div id="<strong>container</strong>"&gt;&lt;/div&gt;
-</code></pre>
-
-        <p>Then, pull that UI and place it in the <strong>container</strong> element, ready to be rendered by Point:</p>
-
-        <pre><code class="javascript" data-language="js">
-// fetch &amp; attach "<strong>people</strong>" to "<strong>person</strong>" template
-point<strong>.attachHTML</strong>("/remote/templates/page.html", "<strong>container</strong>", data);
-</code></pre>
-
-        <p>
-            * <code>template.html</code> should have relevant Point placeholders so <code>data</code> can be rendered
-            there.
-        </p>
-
-        <hr id="external-data">
-        <h3>Using remote data:</h3>
-
-
-        <pre><code class="html" data-language="html">
-&lt;h3&gt;Online members:&lt;/h3&gt;
-&lt;ol&gt;
-    &lt;li <strong>point-component="members"</strong>&gt;{{name.first}} {{name.last}}&lt;/li&gt;
-&lt;/ol&gt;
-</code></pre>
-
-        <pre><code class="javascript" data-language="js">
-point<strong>.attachJSON</strong>("/remote/api/members", "<strong>members</strong>");
-</code></pre>
-
-        <hr id="external-templates-and-data">
-        <h3>If you're using <em>both</em> external templates and JSON data, use:</h3>
-
-        <pre><code class="javascript" data-language="js">
-point<strong>.attachRemote</strong>(
-    "/remote/templates/page.html",
-    "/remote/api/members",
-    "<strong>container</strong>");
-</code></pre>
-
-        <blockquote>
-            To only render the data *<strong>without</strong>* linking it to the DOM element (have it rendered once),
-            simply replace <code>attach*</code> with <code>render*</code> &mdash; for example, use
-            <code>renderJSON(...)</code> instead of <code>attachJSON(...)</code>.
-        </blockquote>
-
-
-
-        <hr id="routing">
-        <h2>Routing</h2>
-
-        <p>
-            Point comes bundled up with a router library for
-            navigating <strong>Single Page Applications</strong>.
-        </p>
-
-        <p>
-            If you only need simple routing for your <strong>Single Page Applications</strong>,
-            and do not wish to involve a full-featured router library,
-            Point comes bundled up with a simple router library that allows you to:
-        </p>
-        <ul>
-            <li>Render page-level components</li>
-            <li>Load remote templates</li>
-            <li>Render either using local or remotly-located data</li>
-        </ul>
-
-        <hr id="routing-install">
-        <h3>Installation</h3>
-        <p>
-            To get started, include Point's router in your HTML
-            and add the navigation container.
-        </p>
-
-        <pre><code class="html" data-language="html">
-&lt;!-- include Point.js router --&gt;
-&lt;script src="//cdn.jsdelivr.net/gh/ranaroussi/pointjs/dist/router.js"&gt;&lt;/script&gt;
-
-&lt;nav&gt;
-    ...
-&lt;/nav&gt;
-
-&lt;!-- navigation container --&gt;
-&lt;div point-container="body"&gt;
-    Default site content
-&lt;/div&gt;
-</code></pre>
-
-        <hr id="routing-local-data">
-        <h3>Using page-level components with local data</h3>
-        <p>The following link will...</p>
-        <ol>
-            <li>Attach the <code>data</code> object to the <code>customers</code> component</li>
-            <li>Place the rendered content in the <code>body</code> container</li>
-            <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
-        </ol>
-
-        <pre><code class="html" data-language="html">
-&lt;a href="/customers"
-    <strong>point-route-container</strong>="body"
-    <strong>point-route-component</strong>="customers"
-    <strong>point-route-data</strong>="customers"&gt; All Customers &lt;/a&gt;
-</code></pre>
-
-        <hr id="routing-remote-data">
-        <h3>Using page-level components with remote data</h3>
-        <p>The following link will...</p>
-        <ol>
-            <li>Fetch data from <code>/customers.json</code></li>
-            <li>Attach it to the <code>customers</code> component</li>
-            <li>Place the rendered content in the <code>body</code> container</li>
-            <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
-        </ol>
-
-        <pre><code class="html" data-language="html">
-&lt;a href="/customers"
-    <strong>point-route-container</strong>="body"
-    <strong>point-route-component</strong>="customers"
-    <strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
-</code></pre>
-
-
-        <hr id="routing-remote-templates">
-        <h3>Using remote template with local data</h3>
-        <p>The following link will...</p>
-        <ol>
-            <li>Fetch a template from <code>/customers.html</code></li>
-            <li>Attach the <code>data</code> object to that template</li>
-            <li>Place the rendered content in the <code>body</code> container</li>
-            <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
-        </ol>
-
-        <pre><code class="html" data-language="html">
-&lt;a href="/customers"
-    <strong>point-route-container</strong>="body"
-    <strong>point-route-html</strong>="/customers.html"
-    <strong>point-route-data</strong>="customers"&gt; Customers &lt;/a&gt;
-</code></pre>
-
-
-        <hr id="routing-remote-templates-and-data">
-        <h3>Using remote template with remote data</h3>
-        <p>The following link will...</p>
-        <ol>
-            <li>Fetch data from <code>/customers.json</code></li>
-            <li>Fetch a template fetched from <code>/customers.html</code></li>
-            <li>Attach the downloaded data to the downloaded template</li>
-            <li>Place the rendered content in the <code>body</code> container</li>
-            <li>Change the address bar URL to <code>youtsite.com/customers</code> (on click)</li>
-        </ol>
-
-        <pre><code class="html" data-language="html">
-&lt;a href="/customers"
-    <strong>point-route-container</strong>="body"
-    <strong>point-route-html</strong>="/customers.html"
-    <strong>point-route-json</strong>="/customers.json"&gt; Customers &lt;/a&gt;
-</code></pre>
-
-        <hr id="routing-server-configuration">
-        <h3>Server configurations</h3>
-        <blockquote>
-            <p>
-                Single Page Applications have a limitation, whereas the
-                users will get a <code>404</code> error if they access
-                <code>http://oursite.com/user/id</code>.
-                To fix the issue, we need to do is add a
-                catch-all fallback route to our web server configuration.
-                If the URL doesn't match any static assets,
-                it should serve the same <code>index.html</code> page that's our app.
-            </p>
-        </blockquote>
-
-        <h4>Apache</h4>
-        <pre><code class="apache" data-language="apache">
-# using mod_rewrite
-&lt;ifModule mod_rewrite.c&gt;
-    RewriteEngine On
-    RewriteBase /
-    RewriteRule ^index\.html$ - [L]
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . /index.html [L]
-&lt;/ifModule&gt;
-
-# <strong>OR</strong> using FallbackResource
-&lt;Directory "/path/to/website/directory"&gt;
-    FallbackResource /index.html
-&lt;/Directory&gt;
-</code></pre>
-
-        <h4>NGINX</h4>
-        <pre><code class="nginx" data-language="nginx">
-location / {
-    try_files $uri $uri/ /index.html;
-}
-</code></pre>
-
-        <p>Now that that's done - the router will work as intended.</p>
-
-
-
-
-
-        <hr>
-        <footer>
-            Copyright &copy; 2019 Ran Aroussi. All rights reserved.<br>
-            <em>DOM.js's source code is available on <a href="https://github.com/ranaroussi/pointjs/dist"
-                    target="github">Github</a>
-                and is licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="apache">Apache
-                    License 2.0</a>.</em>
-        </footer>
-
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/atom-one-light.min.css">
-    <script>
-        hljs.initHighlightingOnLoad();
-    </script>
-
-    <!-- <a style="position:fixed;top:0;right:0;" href="https://github.com/ranaroussi/pointjs"><img width="140" height="140"
-            src="forkme.png" alt="Fork me on GitHub"></a> -->
 <script>
 const toggleMenu = () => {
     const className = document.querySelector('#sidebar').className;
