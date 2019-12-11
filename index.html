@@ -242,9 +242,9 @@ point.$['<strong>status</strong>'].status = false;
 
     <pre><code class="javascript" data-language="js">
 var tasks = [
-    { text: 'Learn JavaScript' },
-    { text: 'Learn Point' },
-    { text: 'Build something awesome' }
+    { text: 'Create an html file' },
+    { text: 'Add Point.js' },
+    { text: 'Rock on!' }
 ];
 
 point.<strong>attach</strong>("<strong>tasks</strong>", tasks);
@@ -259,13 +259,11 @@ point.<strong>attach</strong>("<strong>tasks</strong>", tasks);
     </div>
 
     <script>
-        point.attach("tasks", [{
-            text: 'Learn JavaScript'
-        }, {
-            text: 'Learn Point'
-        }, {
-            text: 'Build something awesome'
-        }]);
+        point.attach("tasks",  [
+            { text: 'Create an html file' },
+            { text: 'Add Point.js' },
+            { text: 'Rock on!' }
+        ]);
     </script>
 
     <hr id="nested-data">
@@ -584,7 +582,7 @@ point.modifier('status2word', (val) => {
 
     <p>
         Point also provides the
-        <code>point-bind</code> DOM element attribute to make it easy to establish
+        <code>point-bind</code> attribute to make it easy to create
         two-way binding between a form input and a javascript object:
     </p>
 
