@@ -253,7 +253,12 @@ em code {
     font-family: Arial, sans-serif;
 }
 #sidebar a {
+    font-weight: normal;
     color: inherit;
+}
+#sidebar a.active {
+    font-weight: bold;
+    color: #39c
 }
 #sidebar > ul {
     list-style: none;

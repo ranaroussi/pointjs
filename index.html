@@ -848,7 +848,7 @@ location / {
 <h3 class="tight">Table of Contents</h3>
 <hr>
 <ul>
-    <li><a href="#">Guide</a></li>
+    <li><a href="#" class="active">Guide</a></li>
     <li><a href="#install">Installation</a></li>
     <li><a href="#rendering">Basic rendering</a>
         <ul>
@@ -910,6 +910,22 @@ const showMenu = () => {
 const hideMenu = () => {
     document.querySelector('#sidebar').className = '';
 };
+
+
+const links = document.querySelectorAll('#sidebar ul a');
+const sections = document.querySelectorAll('hr[id]');
+
+function changeLinkState() {
+  let index = sections.length;
+  while(--index && window.scrollY + 0 < sections[index].offsetTop) {}
+  links.forEach((link) => link.classList.remove('active'));
+  index += (index >= 4) ? 2 : ((index > 0) ? 1 : 0);
+  links[index].classList.add('active');
+}
+changeLinkState();
+window.addEventListener('scroll', changeLinkState);
+
+
 </script>
 </body>
 </html>
