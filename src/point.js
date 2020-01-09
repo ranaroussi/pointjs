@@ -1,6 +1,6 @@
 /* jshint esversion: 9 */
 
-//! point.js v 0.1
+//! point.js v 0.2
 //! url: https://pointjs.org
 //! description: A fast, lightweight, client-side Javascript template framework
 //! authors : Ran Aroussi
@@ -32,6 +32,14 @@
     });
 
 
+    const returnPromise = (error) => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                ((!error) ? resolve : reject)({ error: error });
+            }, 5);
+        });
+    }
+
     // allow outside writing of modifiers
     const ext_modifiers = {};
     point.modifier = (modifier, callback) => {
@@ -55,7 +63,7 @@
     };
 
     const run_modifiers = (value, modifiers, undefined) => {
-        if (value === ' ' || value === '' || value === undefined || value === null) {
+        if (value === ' ' || value === '' || value === undefined || value === null || value === 'null') {
             if (modifiers[0] === "no_null") {
                 return '-';
             }
@@ -263,7 +271,7 @@
             if (observe == false) {
                 return point.render(templateId, remote_json, false);
             }
-            return point.render(templateId, remote_json, false);
+            return point.attach(templateId, remote_json, false);
         });
     };
 
@@ -282,19 +290,23 @@
     };
 
     point.attachJSON = (remote_json, templateId) => {
-        return loadJSON(remote_json, templateId, true);
+        let error = loadJSON(remote_json, templateId, true);
+        return returnPromise(error);
     };
 
     point.renderJSON = (remote_json, templateId) => {
-        return loadJSON(remote_json, templateId, false);
+        let error = loadJSON(remote_json, templateId, false);
+        return returnPromise(error);
     };
 
     point.attachRemote = (remote_template, remote_json, dom_placement, observe) => {
-        return loadRemote(remote_template, remote_json, dom_placement, observe, true);
+        let error = loadRemote(remote_template, remote_json, dom_placement, observe, true);
+        return returnPromise(error);
     };
 
     point.renderRemote = (remote_template, remote_json, dom_placement, observe) => {
-        return loadRemote(remote_template, remote_json, dom_placement, observe, false);
+        let error = loadRemote(remote_template, remote_json, dom_placement, observe, false);
+        return returnPromise(error);
     };
 
 
@@ -401,11 +413,7 @@
             return error;
         }
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                ((!error) ? resolve : reject)({ error: error });
-            }, 5);
-        });
+        return returnPromise(error);
     };
 
     // access un-declated data
@@ -455,11 +463,7 @@
 
         _observe(object);
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                ((!error) ? resolve : reject)({ error: error });
-            }, 5);
-        });
+        return returnPromise(error);
     };
 
 
