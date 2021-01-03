@@ -25,9 +25,3 @@ you can, as Point plays nice with other.
 
 ### Legal stuff
 Point.js is licensed under the Apache License, Version 2.0. A copy of which is included in LICENSE.txt.
-
-### P.S.
-
-I'm very interested in your experience with template.js. Please drop me a note with any feedback you have.
-
-**- Ran**
